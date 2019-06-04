@@ -3,14 +3,15 @@ package common
 import (
 	"bytes"
 	"fmt"
-	"github.com/mitchellh/multistep"
-	commonssh "github.com/mitchellh/packer/common/ssh"
-	"github.com/mitchellh/packer/communicator/ssh"
-	gossh "golang.org/x/crypto/ssh"
 	"io"
 	"log"
 	"net"
 	"strings"
+
+	"github.com/hashicorp/packer/communicator/ssh"
+	"github.com/hashicorp/packer/helper/multistep"
+	commonssh "github.com/hashicorp/packer/helper/ssh"
+	gossh "golang.org/x/crypto/ssh"
 )
 
 func SSHAddress(state multistep.StateBag) (string, error) {
@@ -93,6 +94,7 @@ func ExecuteHostSSHCmd(state multistep.StateBag, cmd string) (stdout string, err
 		Auth: []gossh.AuthMethod{
 			gossh.Password(config.Password),
 		},
+		HostKeyCallback: func(hostname string, remote net.Addr, key gossh.PublicKey) error { return nil },
 	}
 	return doExecuteSSHCmd(cmd, config.HostIp+":22", sshConfig)
 }

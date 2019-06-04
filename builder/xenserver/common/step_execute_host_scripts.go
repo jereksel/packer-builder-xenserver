@@ -1,11 +1,13 @@
 package common
 
 import (
+	"context"
 	"fmt"
-	"github.com/dongyuzheng/easyssh"
-	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/packer"
 	"path/filepath"
+
+	"github.com/dongyuzheng/easyssh"
+	"github.com/hashicorp/packer/helper/multistep"
+	"github.com/hashicorp/packer/packer"
 )
 
 type StepExecuteHostScripts struct {
@@ -14,7 +16,7 @@ type StepExecuteHostScripts struct {
 	HostScriptFolderPath string
 }
 
-func (self *StepExecuteHostScripts) Run(state multistep.StateBag) multistep.StepAction {
+func (self *StepExecuteHostScripts) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	ui := state.Get("ui").(packer.Ui)
 	config := state.Get("commonconfig").(CommonConfig)
 

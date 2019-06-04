@@ -1,15 +1,17 @@
 package common
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
-	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/packer"
-	xsclient "github.com/xenserver/go-xenserver-client"
 	"io"
 	"net/http"
 	"os"
 	"os/exec"
+
+	"github.com/hashicorp/packer/helper/multistep"
+	"github.com/hashicorp/packer/packer"
+	xsclient "github.com/xenserver/go-xenserver-client"
 )
 
 type StepExport struct{}
@@ -79,7 +81,7 @@ func downloadFile(url, filename string, ui packer.Ui) (err error) {
 	return nil
 }
 
-func (StepExport) Run(state multistep.StateBag) multistep.StepAction {
+func (StepExport) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	config := state.Get("commonconfig").(CommonConfig)
 	ui := state.Get("ui").(packer.Ui)
 	client := state.Get("client").(xsclient.XenAPIClient)

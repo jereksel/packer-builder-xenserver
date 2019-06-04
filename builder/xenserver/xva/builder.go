@@ -1,17 +1,17 @@
 package xva
 
 import (
+	"context"
 	"errors"
 	"fmt"
-	"log"
 	"time"
 
-	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/common"
-	"github.com/mitchellh/packer/helper/communicator"
-	hconfig "github.com/mitchellh/packer/helper/config"
-	"github.com/mitchellh/packer/packer"
-	"github.com/mitchellh/packer/template/interpolate"
+	"github.com/hashicorp/packer/common"
+	"github.com/hashicorp/packer/helper/communicator"
+	hconfig "github.com/hashicorp/packer/helper/config"
+	"github.com/hashicorp/packer/helper/multistep"
+	"github.com/hashicorp/packer/packer"
+	"github.com/hashicorp/packer/template/interpolate"
 	xsclient "github.com/xenserver/go-xenserver-client"
 	xscommon "github.com/xenserver/packer-builder-xenserver/builder/xenserver/common"
 )
@@ -86,7 +86,7 @@ func (self *Builder) Prepare(raws ...interface{}) (params []string, retErr error
 
 }
 
-func (self *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (packer.Artifact, error) {
+func (self *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (packer.Artifact, error) {
 	//Setup XAPI client
 	client := xsclient.NewXenAPIClient(self.config.HostIp, self.config.Username, self.config.Password)
 
@@ -100,7 +100,6 @@ func (self *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (pa
 
 	//Share state between the other steps using a statebag
 	state := new(multistep.BasicStateBag)
-	state.Put("cache", cache)
 	state.Put("client", client)
 	state.Put("config", self.config)
 	state.Put("commonconfig", self.config.CommonConfig)
@@ -199,7 +198,7 @@ func (self *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (pa
 	}
 
 	self.runner = &multistep.BasicRunner{Steps: steps}
-	self.runner.Run(state)
+	self.runner.Run(ctx, state)
 
 	if rawErr, ok := state.GetOk("error"); ok {
 		return nil, rawErr.(error)
@@ -218,10 +217,10 @@ func (self *Builder) Run(ui packer.Ui, hook packer.Hook, cache packer.Cache) (pa
 	return artifact, nil
 }
 
-func (self *Builder) Cancel() {
-	if self.runner != nil {
-		log.Println("Cancelling the step runner...")
-		self.runner.Cancel()
-	}
-	fmt.Println("Cancelling the builder")
-}
+// func (self *Builder) Cancel() {
+// 	if self.runner != nil {
+// 		log.Println("Cancelling the step runner...")
+// 		self.runner.Cancel()
+// 	}
+// 	fmt.Println("Cancelling the builder")
+// }

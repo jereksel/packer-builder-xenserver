@@ -1,15 +1,17 @@
 package common
 
 import (
+	"context"
 	"fmt"
-	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/packer"
+
+	"github.com/hashicorp/packer/helper/multistep"
+	"github.com/hashicorp/packer/packer"
 	xsclient "github.com/xenserver/go-xenserver-client"
 )
 
 type StepConvertToTemplate struct{}
 
-func (self *StepConvertToTemplate) Run(state multistep.StateBag) multistep.StepAction {
+func (self *StepConvertToTemplate) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	config := state.Get("commonconfig").(CommonConfig)
 	if !config.ConvertToTemplate {
 		return multistep.ActionContinue

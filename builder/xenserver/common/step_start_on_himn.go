@@ -1,13 +1,15 @@
 package common
 
 import (
+	"context"
 	"fmt"
-	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/packer"
-	xsclient "github.com/xenserver/go-xenserver-client"
-	gossh "golang.org/x/crypto/ssh"
 	"log"
 	"time"
+
+	"github.com/hashicorp/packer/helper/multistep"
+	"github.com/hashicorp/packer/packer"
+	xsclient "github.com/xenserver/go-xenserver-client"
+	gossh "golang.org/x/crypto/ssh"
 )
 
 type StepStartOnHIMN struct{}
@@ -20,7 +22,7 @@ type StepStartOnHIMN struct{}
  *
  */
 
-func (self *StepStartOnHIMN) Run(state multistep.StateBag) multistep.StepAction {
+func (self *StepStartOnHIMN) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 
 	ui := state.Get("ui").(packer.Ui)
 	client := state.Get("client").(xsclient.XenAPIClient)

@@ -1,15 +1,17 @@
 package common
 
 import (
+	"context"
 	"fmt"
-	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/packer"
+
+	"github.com/hashicorp/packer/helper/multistep"
+	"github.com/hashicorp/packer/packer"
 	xsclient "github.com/xenserver/go-xenserver-client"
 )
 
 type StepDestroyVIFs struct{}
 
-func (self *StepDestroyVIFs) Run(state multistep.StateBag) multistep.StepAction {
+func (self *StepDestroyVIFs) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	config := state.Get("commonconfig").(CommonConfig)
 	if !config.DestroyVIFs {
 		return multistep.ActionContinue

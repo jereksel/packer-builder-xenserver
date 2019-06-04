@@ -1,10 +1,11 @@
 package xva
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/packer"
+	"github.com/hashicorp/packer/helper/multistep"
+	"github.com/hashicorp/packer/packer"
 	xsclient "github.com/xenserver/go-xenserver-client"
 )
 
@@ -12,7 +13,7 @@ type stepInstantiateTemplate struct {
 	instance *xsclient.VM
 }
 
-func (self *stepInstantiateTemplate) Run(state multistep.StateBag) multistep.StepAction {
+func (self *stepInstantiateTemplate) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	config := state.Get("config").(config)
 
 	if config.SourceTemplate == "" {

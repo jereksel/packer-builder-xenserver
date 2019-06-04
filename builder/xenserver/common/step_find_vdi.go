@@ -1,9 +1,11 @@
 package common
 
 import (
+	"context"
 	"fmt"
-	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/packer"
+
+	"github.com/hashicorp/packer/helper/multistep"
+	"github.com/hashicorp/packer/packer"
 	xsclient "github.com/xenserver/go-xenserver-client"
 )
 
@@ -21,7 +23,7 @@ func (self *StepFindVdi) ErrorHandler(msg string) multistep.StepAction {
 	return self.PreviousStepAction
 }
 
-func (self *StepFindVdi) Run(state multistep.StateBag) multistep.StepAction {
+func (self *StepFindVdi) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	ui := state.Get("ui").(packer.Ui)
 	client := state.Get("client").(xsclient.XenAPIClient)
 

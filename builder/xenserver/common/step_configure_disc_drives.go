@@ -1,17 +1,19 @@
 package common
 
 import (
+	"context"
 	"fmt"
-	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/packer"
+	"strings"
+
+	"github.com/hashicorp/packer/helper/multistep"
+	"github.com/hashicorp/packer/packer"
 	"github.com/nilshell/xmlrpc"
 	xsclient "github.com/xenserver/go-xenserver-client"
-	"strings"
 )
 
 type StepConfigureDiscDrives struct{}
 
-func (self *StepConfigureDiscDrives) Run(state multistep.StateBag) multistep.StepAction {
+func (self *StepConfigureDiscDrives) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	ui := state.Get("ui").(packer.Ui)
 	config := state.Get("commonconfig").(CommonConfig)
 	client := state.Get("client").(xsclient.XenAPIClient)

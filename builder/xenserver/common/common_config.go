@@ -6,10 +6,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/common"
-	commonssh "github.com/mitchellh/packer/common/ssh"
-	"github.com/mitchellh/packer/template/interpolate"
+	"github.com/hashicorp/packer/common"
+	commonssh "github.com/hashicorp/packer/helper/ssh"
+	"github.com/hashicorp/packer/template/interpolate"
+	"github.com/hashicorp/packer/helper/multistep"
 	xsclient "github.com/xenserver/go-xenserver-client"
 )
 

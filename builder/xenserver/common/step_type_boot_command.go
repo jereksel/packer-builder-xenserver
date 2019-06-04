@@ -3,17 +3,19 @@ package common
 /* Heavily borrowed from builder/quemu/step_type_boot_command.go */
 
 import (
+	"context"
 	"fmt"
-	"github.com/mitchellh/go-vnc"
-	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/packer"
-	"github.com/mitchellh/packer/template/interpolate"
 	"log"
 	"net"
 	"strings"
 	"time"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/hashicorp/packer/helper/multistep"
+	"github.com/hashicorp/packer/packer"
+	"github.com/hashicorp/packer/template/interpolate"
+	"github.com/mitchellh/go-vnc"
 )
 
 const KeyLeftShift uint = 0xFFE1
@@ -28,7 +30,7 @@ type StepTypeBootCommand struct {
 	Ctx interpolate.Context
 }
 
-func (self *StepTypeBootCommand) Run(state multistep.StateBag) multistep.StepAction {
+func (self *StepTypeBootCommand) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	config := state.Get("commonconfig").(CommonConfig)
 	ui := state.Get("ui").(packer.Ui)
 	vnc_port := state.Get("local_vnc_port").(uint)
@@ -42,6 +44,11 @@ func (self *StepTypeBootCommand) Run(state multistep.StateBag) multistep.StepAct
 	// Connect to the local VNC port as we have set up a SSH port forward
 	ui.Say("Connecting to the VM over VNC")
 	ui.Message(fmt.Sprintf("Using local port: %d", vnc_port))
+
+	if true {
+		return multistep.ActionContinue
+	}
+
 	net_conn, err := net.Dial("tcp", fmt.Sprintf("127.0.0.1:%d", vnc_port))
 
 	if err != nil {

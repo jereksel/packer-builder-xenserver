@@ -1,10 +1,11 @@
 package iso
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/packer"
+	"github.com/hashicorp/packer/helper/multistep"
+	"github.com/hashicorp/packer/packer"
 	xsclient "github.com/xenserver/go-xenserver-client"
 )
 
@@ -13,7 +14,7 @@ type stepCreateInstance struct {
 	vdi      *xsclient.VDI
 }
 
-func (self *stepCreateInstance) Run(state multistep.StateBag) multistep.StepAction {
+func (self *stepCreateInstance) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 
 	client := state.Get("client").(xsclient.XenAPIClient)
 	config := state.Get("config").(config)
@@ -59,6 +60,18 @@ func (self *stepCreateInstance) Run(state multistep.StateBag) multistep.StepActi
 		return multistep.ActionHalt
 	}
 	self.instance = instance
+
+	// err = instance.SetVCPUsMax(4)
+	// if err != nil {
+	// 	ui.Error(fmt.Sprintf("Error setting vcpu_max=false: %s", err.Error()))
+	// 	return multistep.ActionHalt
+	// }
+
+	// err = instance.SetVCpuAtStartup(4)
+	// if err != nil {
+	// 	ui.Error(fmt.Sprintf("Error setting vcpi_at_startup=false: %s", err.Error()))
+	// 	return multistep.ActionHalt
+	// }
 
 	err = instance.SetIsATemplate(false)
 	if err != nil {

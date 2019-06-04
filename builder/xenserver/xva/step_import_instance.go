@@ -1,11 +1,12 @@
 package xva
 
 import (
+	"context"
 	"fmt"
 	"os"
 
-	"github.com/mitchellh/multistep"
-	"github.com/mitchellh/packer/packer"
+	"github.com/hashicorp/packer/helper/multistep"
+	"github.com/hashicorp/packer/packer"
 	xsclient "github.com/xenserver/go-xenserver-client"
 	xscommon "github.com/xenserver/packer-builder-xenserver/builder/xenserver/common"
 )
@@ -14,7 +15,7 @@ type stepImportInstance struct {
 	instance *xsclient.VM
 }
 
-func (self *stepImportInstance) Run(state multistep.StateBag) multistep.StepAction {
+func (self *stepImportInstance) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	config := state.Get("config").(config)
 
 	if state.Get("instance_uuid") != nil {

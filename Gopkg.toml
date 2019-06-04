@@ -1,0 +1,55 @@
+# Gopkg.toml example
+#
+# Refer to https://golang.github.io/dep/docs/Gopkg.toml.html
+# for detailed Gopkg.toml documentation.
+#
+# required = ["github.com/user/thing/cmd/thing"]
+# ignored = ["github.com/user/project/pkgX", "bitbucket.org/user/project/pkgA/pkgY"]
+# ignored  = ["github.com/mitchellh/packer/*"]
+#
+# [[constraint]]
+#   name = "github.com/user/project"
+#   version = "1.0.0"
+#
+# [[constraint]]
+#   name = github.com/mitchellh/packer"github.com/user/project2"
+#   branch github.com/mitchellh/packer= "dev"
+#   source github.com/mitchellh/packer= "github.com/myfork/project2"
+#github.com/mitchellh/packer
+# [[overridgithub.com/mitchellh/packere]]
+#   name = github.com/mitchellh/packer"github.com/x/y"
+#   versiongithub.com/mitchellh/packer = "2.4.0"
+#
+# [prune]
+#   non-go = false
+#   go-tests = true
+#   unused-packages = true
+
+
+# [[constraint]]
+#   branch = "master"
+#   name = "github.com/dongyuzheng/easyssh"
+
+# [[constraint]]
+#   branch = "master"
+#   name = "github.com/mitchellh/go-vnc"
+
+# [[constraint]]
+#   branch = "master"
+#   name = "github.com/nilshell/xmlrpc"
+
+[[constraint]]
+  name = "github.com/xenserver/go-xenserver-client"
+  revision = "86a0f30ec1588955b8e63b7b5ffbab43fc3a9ff1"
+
+[prune]
+  go-tests = true
+  unused-packages = true
+
+[[override]]
+  name = "github.com/cheggaaa/pb"
+  version = "1.0.28"
+
+[[override]]
+  name = "github.com/ugorji/go"
+  revision = "9831f2c3ac1068a78f50999a30db84270f647af6"
