@@ -92,3 +92,7 @@ func InstanceSSHIP(state multistep.StateBag) (string, error) {
 func InstanceSSHPort(state multistep.StateBag) (uint, error) {
 	return 22, nil
 }
+
+func InstanceSSHPort2(state multistep.StateBag) (int, error) {
+	return 22, nil
+}

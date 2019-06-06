@@ -39,6 +39,7 @@ func CommHost(state multistep.StateBag) (string, error) {
 }
 
 func SSHConfigFunc(config SSHConfig) func(multistep.StateBag) (*gossh.ClientConfig, error) {
+	// return &gossh.ClientConfig{}
 	return func(state multistep.StateBag) (*gossh.ClientConfig, error) {
 		config := state.Get("commonconfig").(CommonConfig)
 		auth := []gossh.AuthMethod{

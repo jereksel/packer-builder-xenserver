@@ -21,6 +21,7 @@ import (
 type config struct {
 	common.PackerConfig   `mapstructure:",squash"`
 	xscommon.CommonConfig `mapstructure:",squash"`
+	// Comm                  communicator.Config `mapstructure:",squash"`
 
 	VMMemory      uint              `mapstructure:"vm_memory"`
 	DiskSize      uint              `mapstructure:"disk_size"`
@@ -299,18 +300,20 @@ func (self *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (p
 			Chan:    httpReqChan,
 			Timeout: self.config.InstallTimeout, // @todo change this
 		},
-		&xscommon.StepForwardPortOverSSH{
-			RemotePort:  xscommon.InstanceSSHPort,
-			RemoteDest:  xscommon.InstanceSSHIP,
-			HostPortMin: self.config.HostPortMin,
-			HostPortMax: self.config.HostPortMax,
-			ResultKey:   "local_ssh_port",
-		},
+		// &xscommon.StepForwardPortOverSSH{
+		// 	RemotePort:  xscommon.InstanceSSHPort,
+		// 	RemoteDest:  xscommon.InstanceSSHIP,
+		// 	HostPortMin: self.config.HostPortMin,
+		// 	HostPortMax: self.config.HostPortMax,
+		// 	ResultKey:   "local_ssh_port",
+		// },
 		&communicator.StepConnect{
 			Config:    &self.config.SSHConfig.Comm,
-			Host:      xscommon.CommHost,
-			SSHConfig: xscommon.SSHConfigFunc(self.config.CommonConfig.SSHConfig),
-			SSHPort:   xscommon.SSHPort,
+			Host:      xscommon.InstanceSSHIP,
+			SSHConfig: self.config.SSHConfig.Comm.SSHConfigFunc(),
+			// self.config.Comm.Co
+			// SSHConfig: xscommon.SSHConfigFunc(self.config.CommonConfig.SSHConfig),
+			// SSHPort:   xscommon.InstanceSSHPort2,
 		},
 		new(common.StepProvision),
 		new(xscommon.StepShutdown),

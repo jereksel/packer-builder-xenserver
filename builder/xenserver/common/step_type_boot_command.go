@@ -3,6 +3,7 @@ package common
 /* Heavily borrowed from builder/quemu/step_type_boot_command.go */
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"log"
@@ -16,6 +17,7 @@ import (
 	"github.com/hashicorp/packer/packer"
 	"github.com/hashicorp/packer/template/interpolate"
 	"github.com/mitchellh/go-vnc"
+	xsclient "github.com/xenserver/go-xenserver-client"
 )
 
 const KeyLeftShift uint = 0xFFE1
@@ -33,8 +35,9 @@ type StepTypeBootCommand struct {
 func (self *StepTypeBootCommand) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	config := state.Get("commonconfig").(CommonConfig)
 	ui := state.Get("ui").(packer.Ui)
-	vnc_port := state.Get("local_vnc_port").(uint)
 	http_port := state.Get("http_port").(uint)
+	client := state.Get("client").(xsclient.XenAPIClient)
+	instance_uuid := state.Get("instance_uuid").(string)
 
 	// skip this step if we have nothing to type
 	if len(config.BootCommand) == 0 {
@@ -43,25 +46,59 @@ func (self *StepTypeBootCommand) Run(ctx context.Context, state multistep.StateB
 
 	// Connect to the local VNC port as we have set up a SSH port forward
 	ui.Say("Connecting to the VM over VNC")
-	ui.Message(fmt.Sprintf("Using local port: %d", vnc_port))
 
-	if true {
-		return multistep.ActionContinue
-	}
-
-	net_conn, err := net.Dial("tcp", fmt.Sprintf("127.0.0.1:%d", vnc_port))
-
+	netConn, err := net.Dial("tcp", "192.168.1.10:80")
 	if err != nil {
-		err := fmt.Errorf("Error connecting to VNC: %s", err)
-		state.Put("error", err)
-		ui.Error(err.Error())
+		ui.Error(fmt.Sprintf("Error connecting to server %s", err.Error()))
 		return multistep.ActionHalt
 	}
 
-	defer net_conn.Close()
+	if _, err := fmt.Fprintf(netConn, "CONNECT /console?uuid=%s HTTP/1.0\r\n", instance_uuid); err != nil {
+		ui.Error(fmt.Sprintf("Error sending CONNECT %s", err.Error()))
+		return multistep.ActionHalt
+	}
 
-	c, err := vnc.Client(net_conn, &vnc.ClientConfig{Exclusive: true})
+	if _, err := fmt.Fprintf(netConn, "Cookie: session_id=%s\r\n", client.Session.(string)); err != nil {
+		ui.Error(fmt.Sprintf("Error sending Cookie %s", err.Error()))
+		return multistep.ActionHalt
+	}
 
+	if _, err := fmt.Fprintf(netConn, "\r\n"); err != nil {
+		ui.Error(fmt.Sprintf("Error sending empty line %s", err.Error()))
+		return multistep.ActionHalt
+	}
+
+	fmt.Println("Connecting to VNC")
+
+	reader := bufio.NewReader(netConn)
+
+	line, _, err := reader.ReadLine()
+	if err != nil {
+		ui.Error(fmt.Sprintf("Error reading initial line %s", err.Error()))
+		return multistep.ActionHalt
+	}
+
+	if string(line) != "HTTP/1.1 200 OK" {
+		ui.Error(fmt.Sprintf("Server did not return 200, instead it returned %s", line))
+		return multistep.ActionHalt
+	}
+
+	for {
+
+		line, _, err := reader.ReadLine()
+		if err != nil {
+			ui.Error(fmt.Sprintf("Error reading line %s", err.Error()))
+			return multistep.ActionHalt
+		}
+
+		if len(line) == 0 {
+			fmt.Println("No more lines")
+			break
+		}
+
+	}
+
+	c, err := vnc.Client(netConn, &vnc.ClientConfig{Exclusive: true})
 	if err != nil {
 		err := fmt.Errorf("Error establishing VNC session: %s", err)
 		state.Put("error", err)
@@ -69,11 +106,37 @@ func (self *StepTypeBootCommand) Run(ctx context.Context, state multistep.StateB
 		return multistep.ActionHalt
 	}
 
-	defer c.Close()
+	// ui.Message(fmt.Sprintf("Using local port: %d", vnc_port))
 
-	log.Printf("Connected to the VNC console: %s", c.DesktopName)
+	// if true {
+	// 	return multistep.ActionContinue
+	// }
 
-	// find local ip
+	// net_conn, err := net.Dial("tcp", fmt.Sprintf("127.0.0.1:%d", vnc_port))
+
+	// if err != nil {
+	// 	err := fmt.Errorf("Error connecting to VNC: %s", err)
+	// 	state.Put("error", err)
+	// 	ui.Error(err.Error())
+	// 	return multistep.ActionHalt
+	// }
+
+	// defer net_conn.Close()
+
+	// c, err := vnc.Client(net_conn, &vnc.ClientConfig{Exclusive: true})
+
+	// if err != nil {
+	// 	err := fmt.Errorf("Error establishing VNC session: %s", err)
+	// 	state.Put("error", err)
+	// 	ui.Error(err.Error())
+	// 	return multistep.ActionHalt
+	// }
+
+	// defer c.Close()
+
+	// log.Printf("Connected to the VNC console: %s", c.DesktopName)
+
+	// // find local ip
 	envVar, err := ExecuteHostSSHCmd(state, "echo $SSH_CLIENT")
 	if err != nil {
 		ui.Error(fmt.Sprintf("Error detecting local IP: %s", err))
