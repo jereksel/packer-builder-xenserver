@@ -8,9 +8,9 @@ You can check out packer [here](https://packer.io).
 
 
 ## Dependencies
-* Packer >= 0.7.2 (https://packer.io)
-* XenServer > 6.2 (http://xenserver.org)
-* Golang (tested with 1.2.1) 
+* Packer >= 1.4.1 (https://packer.io)
+* XenServer >= 7.1 (http://xenserver.org) - Tested on XCP-ng 7.6
+* Golang
 
 
 ## Install Go
