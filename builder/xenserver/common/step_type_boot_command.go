@@ -25,7 +25,7 @@ const KeyLeftShift uint = 0xFFE1
 type bootCommandTemplateData struct {
 	Name     string
 	HTTPIP   string
-	HTTPPort uint
+	HTTPPort int
 }
 
 type StepTypeBootCommand struct {
@@ -35,7 +35,7 @@ type StepTypeBootCommand struct {
 func (self *StepTypeBootCommand) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	config := state.Get("commonconfig").(CommonConfig)
 	ui := state.Get("ui").(packer.Ui)
-	http_port := state.Get("http_port").(uint)
+	http_port := state.Get("http_port").(int)
 	client := state.Get("client").(xsclient.XenAPIClient)
 	instance_uuid := state.Get("instance_uuid").(string)
 

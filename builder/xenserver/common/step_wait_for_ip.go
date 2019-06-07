@@ -12,14 +12,12 @@ import (
 )
 
 type StepWaitForIP struct {
-	Chan    <-chan string
 	Timeout time.Duration
 }
 
 func (self *StepWaitForIP) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	ui := state.Get("ui").(packer.Ui)
 	client := state.Get("client").(xsclient.XenAPIClient)
-	config := state.Get("commonconfig").(CommonConfig)
 
 	ui.Say("Step: Wait for VM's IP to become known to us.")
 
@@ -36,35 +34,19 @@ func (self *StepWaitForIP) Run(ctx context.Context, state multistep.StateBag) mu
 		PredicateInterval: 5 * time.Second,
 		Predicate: func() (result bool, err error) {
 
-			if config.IPGetter == "auto" || config.IPGetter == "http" {
-
-				// Snoop IP from HTTP fetch
-				select {
-				case ip = <-self.Chan:
-					ui.Message(fmt.Sprintf("Got IP '%s' from HTTP request", ip))
-					return true, nil
-				default:
-				}
-
+			// Look for PV IP
+			metrics, err := instance.GetGuestMetrics()
+			if err != nil {
+				return false, err
 			}
-
-			if config.IPGetter == "auto" || config.IPGetter == "tools" {
-
-				// Look for PV IP
-				metrics, err := instance.GetGuestMetrics()
-				if err != nil {
-					return false, err
-				}
-				if metrics != nil {
-					networks := metrics["networks"].(xmlrpc.Struct)
-					if ipRaw, ok := networks["0/ip"]; ok {
-						if ip = ipRaw.(string); ip != "" {
-							ui.Message(fmt.Sprintf("Got IP '%s' from XenServer tools", ip))
-							return true, nil
-						}
+			if metrics != nil {
+				networks := metrics["networks"].(xmlrpc.Struct)
+				if ipRaw, ok := networks["0/ip"]; ok {
+					if ip = ipRaw.(string); ip != "" {
+						ui.Message(fmt.Sprintf("Got IP '%s' from XenServer tools", ip))
+						return true, nil
 					}
 				}
-
 			}
 
 			return false, nil
@@ -89,10 +71,6 @@ func InstanceSSHIP(state multistep.StateBag) (string, error) {
 	return ip, nil
 }
 
-func InstanceSSHPort(state multistep.StateBag) (uint, error) {
-	return 22, nil
-}
-
-func InstanceSSHPort2(state multistep.StateBag) (int, error) {
+func InstanceSSHPort(state multistep.StateBag) (int, error) {
 	return 22, nil
 }

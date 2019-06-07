@@ -186,8 +186,6 @@ func (self *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (p
 	state.Put("hook", hook)
 	state.Put("ui", ui)
 
-	httpReqChan := make(chan string, 1)
-
 	//Build the steps
 	download_steps := []multistep.Step{
 		&common.StepDownload{
@@ -226,8 +224,10 @@ func (self *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (p
 		&common.StepCreateFloppy{
 			Files: self.config.FloppyFiles,
 		},
-		&xscommon.StepHTTPServer{
-			Chan: httpReqChan,
+		&common.StepHTTPServer{
+			HTTPDir:     self.config.HTTPDir,
+			HTTPPortMin: self.config.HTTPPortMin,
+			HTTPPortMax: self.config.HTTPPortMax,
 		},
 		&xscommon.StepUploadVdi{
 			VdiNameFunc: func() string {
@@ -284,20 +284,11 @@ func (self *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (p
 			LocalScripts: self.config.PreBootHostScripts,
 		},
 		new(xscommon.StepStartVmPaused),
-		new(xscommon.StepGetVNCPort),
-		&xscommon.StepForwardPortOverSSH{
-			RemotePort:  xscommon.InstanceVNCPort,
-			RemoteDest:  xscommon.InstanceVNCIP,
-			HostPortMin: self.config.HostPortMin,
-			HostPortMax: self.config.HostPortMax,
-			ResultKey:   "local_vnc_port",
-		},
 		new(xscommon.StepBootWait),
 		&xscommon.StepTypeBootCommand{
 			Ctx: self.config.ctx,
 		},
 		&xscommon.StepWaitForIP{
-			Chan:    httpReqChan,
 			Timeout: self.config.InstallTimeout, // @todo change this
 		},
 		// &xscommon.StepForwardPortOverSSH{

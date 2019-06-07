@@ -114,7 +114,7 @@ func ExecuteGuestSSHCmd(state multistep.StateBag, cmd string) (stdout string, er
 	return doExecuteSSHCmd(cmd, localAddress, sshConfig)
 }
 
-func forward(local_conn net.Conn, config *gossh.ClientConfig, server, remote_dest string, remote_port uint) error {
+func forward(local_conn net.Conn, config *gossh.ClientConfig, server, remote_dest string, remote_port int) error {
 	defer local_conn.Close()
 
 	ssh_client_conn, err := gossh.Dial("tcp", server+":22", config)
@@ -157,7 +157,7 @@ func forward(local_conn net.Conn, config *gossh.ClientConfig, server, remote_des
 	return nil
 }
 
-func ssh_port_forward(local_listener net.Listener, remote_port uint, remote_dest, host, username, password string) error {
+func ssh_port_forward(local_listener net.Listener, remote_port int, remote_dest, host, username, password string) error {
 
 	config := &gossh.ClientConfig{
 		User: username,

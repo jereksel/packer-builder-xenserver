@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/hashicorp/packer/common"
+	"github.com/hashicorp/packer/helper/multistep"
 	commonssh "github.com/hashicorp/packer/helper/ssh"
 	"github.com/hashicorp/packer/template/interpolate"
-	"github.com/hashicorp/packer/helper/multistep"
 	xsclient "github.com/xenserver/go-xenserver-client"
 )
 
@@ -26,8 +26,8 @@ type CommonConfig struct {
 	NetworkNames       []string `mapstructure:"network_names"`
 	ExportNetworkNames []string `mapstructure:"export_network_names"`
 
-	HostPortMin uint `mapstructure:"host_port_min"`
-	HostPortMax uint `mapstructure:"host_port_max"`
+	HostPortMin int `mapstructure:"host_port_min"`
+	HostPortMax int `mapstructure:"host_port_max"`
 
 	PreBootHostScripts   []string `mapstructure:"pre_boot_host_scripts"`
 	PreExportHostScripts []string `mapstructure:"pre_export_host_scripts"`
@@ -40,8 +40,8 @@ type CommonConfig struct {
 	ToolsIsoName string `mapstructure:"tools_iso_name"`
 
 	HTTPDir     string `mapstructure:"http_directory"`
-	HTTPPortMin uint   `mapstructure:"http_port_min"`
-	HTTPPortMax uint   `mapstructure:"http_port_max"`
+	HTTPPortMin int    `mapstructure:"http_port_min"`
+	HTTPPortMax int    `mapstructure:"http_port_max"`
 
 	Communicator string `mapstructure:"communicator"`
 
@@ -63,7 +63,6 @@ type CommonConfig struct {
 	OutputDir string `mapstructure:"output_directory"`
 	Format    string `mapstructure:"format"`
 	KeepVM    string `mapstructure:"keep_vm"`
-	IPGetter  string `mapstructure:"ip_getter"`
 }
 
 func (c *CommonConfig) Prepare(ctx *interpolate.Context, pc *common.PackerConfig) []error {
@@ -142,10 +141,6 @@ func (c *CommonConfig) Prepare(ctx *interpolate.Context, pc *common.PackerConfig
 		c.KeepVM = "never"
 	}
 
-	if c.IPGetter == "" {
-		c.IPGetter = "auto"
-	}
-
 	// Validation
 
 	if c.Username == "" {
@@ -211,12 +206,6 @@ func (c *CommonConfig) Prepare(ctx *interpolate.Context, pc *common.PackerConfig
 	case "always", "never", "on_success":
 	default:
 		errs = append(errs, errors.New("keep_vm must be one of 'always', 'never', 'on_success'"))
-	}
-
-	switch c.IPGetter {
-	case "auto", "tools", "http":
-	default:
-		errs = append(errs, errors.New("ip_getter must be one of 'auto', 'tools', 'http'"))
 	}
 
 	return errs
