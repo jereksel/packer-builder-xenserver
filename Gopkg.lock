@@ -65,7 +65,7 @@
   revision = "ec5e00d3c878b2a97bbe0884ef45ffd1b4f669f5"
 
 [[projects]]
-  digest = "1:48627950255ea894a50613d10de541cacbc6a383e5066d17894e6e94878a6e1d"
+  digest = "1:7743e053bccd5d7c46e527264b182d20b5e38f82815dc556657bdb55c27038f8"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -105,8 +105,8 @@
     "service/sts",
   ]
   pruneopts = "UT"
-  revision = "1fbd98bfc4019214235f69e4863bad1147765c49"
-  version = "v1.19.43"
+  revision = "4be228a772ad27b69e25c148dc794a17bf7b735c"
+  version = "v1.19.45"
 
 [[projects]]
   branch = "master"
@@ -125,7 +125,6 @@
   version = "v1.0.28"
 
 [[projects]]
-  branch = "master"
   digest = "1:5ccb1ff31acbb9909eca5bf5e25c68b3a609f59eca2c0c6cc965734c0120d656"
   name = "github.com/dongyuzheng/easyssh"
   packages = ["."]
@@ -321,7 +320,7 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:9eedec319c20c4f683552cdc5c71556c37da6e6f3a38b183b7ec8fafb7d382dc"
+  digest = "1:373a6188a31f462dc060a1165fb50981afb1348c096d492f80b4fe2526848ff1"
   name = "github.com/hashicorp/packer"
   packages = [
     "common",
@@ -339,6 +338,7 @@
     "helper/multistep",
     "helper/ssh",
     "packer",
+    "packer/plugin",
     "packer/rpc",
     "packer/tmp",
     "template",
@@ -358,7 +358,7 @@
   version = "v0.8.3"
 
 [[projects]]
-  digest = "1:010eddbe5d1da9cbe074d721ff874862cf5d8be2069107e41915d50a0d2936ef"
+  digest = "1:abffbe3d4718f67015db40830240472403a976d1825fc363085105f5ecec6932"
   name = "github.com/hashicorp/vault"
   packages = [
     "api",
@@ -370,8 +370,8 @@
     "helper/strutil",
   ]
   pruneopts = "UT"
-  revision = "0082501623c0b704b87b1fbc84c2d725994bac54"
-  version = "v1.1.2"
+  revision = "9bc820f700f83a7c4bcab54c5323735a581b34eb"
+  version = "v1.1.3"
 
 [[projects]]
   branch = "master"
@@ -481,14 +481,6 @@
   pruneopts = "UT"
   revision = "3536a929edddb9a5b34bd6861dc4a9647cb459fe"
   version = "v1.1.2"
-
-[[projects]]
-  digest = "1:bd10e6306f45c2fb759ec563c39198a4994e364935badc22e1246fb3b1af0f16"
-  name = "github.com/mitchellh/packer"
-  packages = ["packer/plugin"]
-  pruneopts = "UT"
-  revision = "0bb38f438570dc0b3b1253169b0de0f4a2be6801"
-  version = "v1.4.1"
 
 [[projects]]
   digest = "1:2a7e6f8bebdca6bd8bc359c37f01ae1c4ea4f8481eaabf93b1ae4863f15b72c7"
@@ -619,7 +611,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:40276abbbbfb00d1f726c4a75cdeac00e975eefa7f99e328dbc52439c088b8a7"
+  digest = "1:b0781af2668f0e38c159848604d5c3bc46967bf7331a8cde26c439eedc793b22"
   name = "golang.org/x/crypto"
   packages = [
     "curve25519",
@@ -633,7 +625,7 @@
     "ssh/agent",
   ]
   pruneopts = "UT"
-  revision = "20be4c3c3ed52bfccdb2d59a412ee1a936d175a7"
+  revision = "f99c8df09eb5bff426315721bfa5f16a99cad32c"
 
 [[projects]]
   branch = "master"
@@ -655,7 +647,7 @@
     "trace",
   ]
   pruneopts = "UT"
-  revision = "60506f45cf65977eb3a9c6e30f995f54a721c271"
+  revision = "1492cefac77f61bc789c00f41ead8f8d7307cd21"
 
 [[projects]]
   branch = "master"
@@ -680,7 +672,7 @@
     "unix",
   ]
   pruneopts = "UT"
-  revision = "4c4f7f33c9ed00de01c4c741d2177abfcfe19307"
+  revision = "7fc4e5ec1444df20dd195ae7c3bbfcd7114d3faa"
 
 [[projects]]
   digest = "1:28deae5fe892797ff37a317b5bcda96d11d1c90dadd89f1337651df3bc4c586e"
@@ -743,11 +735,11 @@
     "transport/http/internal/propagation",
   ]
   pruneopts = "UT"
-  revision = "721295fe20d585ce7e948146f82188429d14da33"
-  version = "v0.5.0"
+  revision = "aac82e61c0c8fe133c297b4b59316b9f481e1f0a"
+  version = "v0.6.0"
 
 [[projects]]
-  digest = "1:ae8b6cd1af38908c84050254b3fe998dcf6926c6e85d8e504a7402ab32da4569"
+  digest = "1:498b722d33dde4471e7d6e5d88a5e7132d2a8306fea5ff5ee82d1f418b4f41ed"
   name = "google.golang.org/appengine"
   packages = [
     ".",
@@ -762,8 +754,8 @@
     "urlfetch",
   ]
   pruneopts = "UT"
-  revision = "4c25cacc810c02874000e4f7071286a8e96b2515"
-  version = "v1.6.0"
+  revision = "b2f4a3cf3c67576a2ee09e1fe62656a5086ce880"
+  version = "v1.6.1"
 
 [[projects]]
   branch = "master"
@@ -777,7 +769,7 @@
     "googleapis/type/expr",
   ]
   pruneopts = "UT"
-  revision = "fb225487d10142b5bcc35abfc6cb9a0609614976"
+  revision = "eb0b1bdb6ae60fcfc41b8d907b50dfb346112301"
 
 [[projects]]
   digest = "1:e8800ddadd6bce3bc0c5ffd7bc55dbdddc6e750956c10cc10271cade542fccbe"
@@ -832,9 +824,9 @@
     "github.com/hashicorp/packer/helper/multistep",
     "github.com/hashicorp/packer/helper/ssh",
     "github.com/hashicorp/packer/packer",
+    "github.com/hashicorp/packer/packer/plugin",
     "github.com/hashicorp/packer/template/interpolate",
     "github.com/mitchellh/go-vnc",
-    "github.com/mitchellh/packer/packer/plugin",
     "github.com/nilshell/xmlrpc",
     "github.com/xenserver/go-xenserver-client",
     "golang.org/x/crypto/ssh",
