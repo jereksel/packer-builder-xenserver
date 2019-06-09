@@ -61,17 +61,17 @@ func (self *stepCreateInstance) Run(ctx context.Context, state multistep.StateBa
 	}
 	self.instance = instance
 
-	// err = instance.SetVCPUsMax(4)
-	// if err != nil {
-	// 	ui.Error(fmt.Sprintf("Error setting vcpu_max=false: %s", err.Error()))
-	// 	return multistep.ActionHalt
-	// }
+	err = instance.SetVCPUsMax(config.VMCPUs)
+	if err != nil {
+		ui.Error(fmt.Sprintf("Error setting vcpu_max=%d: %s", config.VMCPUs, err.Error()))
+		return multistep.ActionHalt
+	}
 
-	// err = instance.SetVCpuAtStartup(4)
-	// if err != nil {
-	// 	ui.Error(fmt.Sprintf("Error setting vcpi_at_startup=false: %s", err.Error()))
-	// 	return multistep.ActionHalt
-	// }
+	err = instance.SetVCpuAtStartup(config.VMCPUs)
+	if err != nil {
+		ui.Error(fmt.Sprintf("Error setting vcpu_at_startup=%d: %s", config.VMCPUs, err.Error()))
+		return multistep.ActionHalt
+	}
 
 	err = instance.SetIsATemplate(false)
 	if err != nil {

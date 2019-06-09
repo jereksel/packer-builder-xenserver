@@ -78,6 +78,7 @@ A brief explanation of what the config parameters mean:
  * `remote_host` - the IP for the XenServer host being used.
  * `vm_name` - the name that should be given to the created VM.
  * `vm_memory` - the static memory configuration for the VM, in MB.
+ * `vm_cpus` - the number of processors assigned to VM
  * `disk_size` - the size of the disk the VM should be created with, in MB.
  * `iso_name` - the name of the ISO visible on a ISO SR connected to the XenServer host.
  * `http_directory` - the path to a local directory to serve up over http.

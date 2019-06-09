@@ -24,6 +24,7 @@ type config struct {
 	// Comm                  communicator.Config `mapstructure:",squash"`
 
 	VMMemory      uint              `mapstructure:"vm_memory"`
+	VMCPUs        uint              `mapstructure:"vm_cpus"`
 	DiskSize      uint              `mapstructure:"disk_size"`
 	CloneTemplate string            `mapstructure:"clone_template"`
 	VMOtherConfig map[string]string `mapstructure:"vm_other_config"`
@@ -80,6 +81,10 @@ func (self *Builder) Prepare(raws ...interface{}) (params []string, retErr error
 
 	if self.config.VMMemory == 0 {
 		self.config.VMMemory = 1024
+	}
+
+	if self.config.VMCPUs == 0 {
+		self.config.VMCPUs = 1
 	}
 
 	if self.config.CloneTemplate == "" {
